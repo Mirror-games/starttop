@@ -4,104 +4,99 @@
 	<title>Zerkala Zerkaliki</title>
 </head>
 <body>
-	<canvas id="field" width="600" height="600"></canvas>
+	<div id="container"></div>
 	<p>Управляй фотоном, задавая с помощью мыши его движение.</p>
 	<p>Удваивай количество фотонов и побеждай своих друзей-задротов!</p>
-	<script type="text/javascript">
-		var c = document.getElementById("field");
-		var context = c.getContext("2d");
+    <!--<script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v5.0.2.min.js"></script>-->
+    <script src="http://www.html5canvastutorials.com/lib/KineticJS/kinetic-v5.0.1-beta.js"></script>
+	<script defer="defer">
+		// drawMirror(20,20,550,570);
+		// function drawMirror(x1_mirr, y1_mirr, x2_mirr, y2_mirr) {
+		// 	var mirr = new Kinetic.Line({
+		// 		points: [x1_mirr, y1_mirr, x2_mirr, y2_mirr],
+		// 		stroke: 'red',
+		// 		strokeWidth: 2,
+		// 		lineCap: 'round'
+		// 	})
+		// 	layer.add(mirr);
+		// }
 
-	function drawCircles (x, y, r) {
-		context.beginPath();
-		context.arc(x, y, r, 0, 2*Math.PI);
-		context.fillStyle = 'black';
-		context.fill();
-		context.lineWidth = 1;
-		context.strokeStyle = 'black';
-		context.stroke();
-	}
+		// drawBonuses(20, 20)
+		// function drawBonuses(x_bon, y_bon) {
+		// 	var bonus = new Kinetic.Rect({
+		// 		x: x_bon,
+		// 		y: y_bon,
+		// 		width: 10,
+		// 		height: 10,
+		// 		fill: '#66EFFE',
+		// 		stroke: '#66EFFE',
+		// 		strokeWidth: 1
+		// 	})
+		// 	layer.add(bonus);
+		// }
+		stage = 0;
+		layer = 0;
+		circ = 0;
 
+		function Game() {
+			this.mirrors = [];
+			this.balls = [];
+			// this.bonuses - do that later
+		}
 
-	function drawMirror(x1, y1, x2, y2) {
-		context.beginPath();
-		context.moveTo(x1, y1);
-		context.lineTo(x2, y2);
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();
-	}
+		function Mirror(x1, y1, x2, y2) {
+			this.x1 = x1;
+			this.y1 = y1;
+			this.x2 = x2;
+			this.y2 = y2;
+			this.mirr = new Kinetic.Line({
+				points: [x1, y1, x2, y2],
+				stroke: 'red',
+				strokeWidth: 2,
+				lineCap: 'round'
+			})
+			
+			layer.add(this.mirr);
+		}
 
-	function drawBonuses(x, y) {
-		var x1 = x + 5;
-		var x2 = x - 5;
-		var y1 = y + 5;
-		var y2 = y - 5;
-		context.beginPath();
-		context.rect(x1,y1,x2,y2);
-		context.fillStyle = '#66EFFE';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = '#66EFFE';
-		context.stroke();
-	}
-	
-	drawCircles(200,300,7);
-	drawMirror(20,20,550,570);
-	drawBonuses(20, 20)
-</script>
-</body>
-</html><html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Zerkala Zerkaliki</title>
-</head>
-<body>
-	<canvas id="field" width="600" height="600"></canvas>
-	<div style="width:600px;">
-		<p>Управляй фотоном, задавая с помощью мыши его движение.</p>
-		<p>Удваивай количество фотонов и побеждай своих друзей-задротов!</p>
-	</div>
-	<script type="text/javascript">
-		var c = document.getElementById("field");
-		var context = c.getContext("2d");
+		function init() {
+			stage = new Kinetic.Stage({
+				container: 'container',
+				width: 578,
+				height: 578
+			});
+			
+			layer = new Kinetic.Layer();
 
-	function drawCircles (x, y, r) {
-		context.beginPath();
-		context.arc(x, y, r, 0, 2*Math.PI);
-		context.fillStyle = 'black';
-		context.fill();
-		context.lineWidth = 1;
-		context.strokeStyle = 'black';
-		context.stroke();
-	}
+			circ = new Kinetic.Circle({
+				x: stage.width()/2,
+				y: stage.height()/2,
+				radius: 7,
+				fill: 'black',
+				stroke: 'black',
+				stokeWidth:1
+			});
 
+			layer.add(circ);
+			stage.add(layer);
+		}
 
-	function drawMirror(x1, y1, x2, y2) {
-		context.beginPath();
-		context.moveTo(x1, y1);
-		context.lineTo(x2, y2);
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();
-	}
+		init ();
+		var m = new Mirror(500,20,500,500);
 
-	function drawBonuses(x, y) {
-		var x1 = x + 5;
-		var x2 = x - 5;
-		var y1 = y + 5;
-		var y2 = y - 5;
-		context.beginPath();
-		context.rect(x1,y1,x2,y2);
-		context.fillStyle = '#66EFFE';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = '#66EFFE';
-		context.stroke();
-	}
-	
-	drawCircles(200,300,7);
-	drawMirror(20,20,550,570);
-	drawBonuses(20, 20)
-</script>
+		var amplitude = 150;
+		var period = 2000;
+		var centerX = stage.width()/2;
+
+		var anim = new Kinetic.Animation(
+
+			function(frame) {
+				circ.setX(amplitude * Math.sin(frame.time * 2 * Math.PI / period) + centerX);
+			}
+
+		, layer);
+		anim.start();
+
+	</script>
 </body>
 </html>
