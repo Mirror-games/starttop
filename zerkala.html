@@ -4,12 +4,15 @@
 	<title>Zerkala Zerkaliki</title>
 </head>
 <body>
-	<div id="container"></div>
+	<div id="container" class="container"></div>
 	<p>Управляй фотоном, задавая с помощью мыши его движение.</p>
 	<p>Удваивай количество фотонов и побеждай своих друзей-задротов!</p>
     <!--<script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v5.0.2.min.js"></script>-->
     <script src="http://www.html5canvastutorials.com/lib/KineticJS/kinetic-v5.0.1-beta.js"></script>
+	<script src="jquery-1.11.0.min.js"></script>
 	<script defer="defer">
+
+$( document ).ready(function() {
 		// drawMirror(20,20,550,570);
 		// function drawMirror(x1_mirr, y1_mirr, x2_mirr, y2_mirr) {
 		// 	var mirr = new Kinetic.Line({
@@ -34,9 +37,9 @@
 		// 	})
 		// 	layer.add(bonus);
 		// }
-		stage = 0;
-		layer = 0;
-		circ = 0;
+		// stage = 0;
+		// layer = 0;
+		// ball = 0;
 
 		function Game() {
 			this.mirrors = [];
@@ -49,14 +52,16 @@
 			this.y1 = y1;
 			this.x2 = x2;
 			this.y2 = y2;
-			this.mirr = new Kinetic.Line({
+
+			this.shape = new Kinetic.Line({
 				points: [x1, y1, x2, y2],
 				stroke: 'red',
 				strokeWidth: 2,
 				lineCap: 'round'
 			})
-			
-			layer.add(this.mirr);
+			layer.add(this.shape);
+
+			game.mirrors.push (this);
 		}
 
 		function init() {
@@ -68,7 +73,7 @@
 			
 			layer = new Kinetic.Layer();
 
-			circ = new Kinetic.Circle({
+			ball = new Kinetic.Circle({
 				x: stage.width()/2,
 				y: stage.height()/2,
 				radius: 7,
@@ -77,25 +82,82 @@
 				stokeWidth:1
 			});
 
-			layer.add(circ);
+			layer.add(ball);
 			stage.add(layer);
+
+			drawing = false;
+	
+		$('div.container').mousedown(function () {
+					drawing = true;
+					var mPos = stage.getPointerPosition();
+					m = new Mirror (mPos.x, mPos.y, mPos.x, mPos.y);
+			});
+
+			$('div.container').mousemove(function (){
+				if (!drawing) return;
+
+				var mPos = stage.getPointerPosition();
+				var m = game.mirrors [game.mirrors.length - 1];
+				pts = m.shape.points();
+				pts [2] = m.x2 = mPos.x;
+				pts [3] = m.y2 = mPos.y;
+				m.shape.points (pts);
+			});
+
+			$('div.container').mouseup(function (){
+				drawing = false;
+
+				var mPos = stage.getPointerPosition();
+				var m = game.mirrors [game.mirrors.length - 1];
+				pts = m.shape.points();
+				pts [2] = m.x2 = mPos.x;
+				pts [3] = m.y2 = mPos.y;
+				m.shape.points (pts);
+			});
 		}
 
-		init ();
-		var m = new Mirror(500,20,500,500);
-
-		var amplitude = 150;
-		var period = 2000;
-		var centerX = stage.width()/2;
-
-		var anim = new Kinetic.Animation(
-
-			function(frame) {
-				circ.setX(amplitude * Math.sin(frame.time * 2 * Math.PI / period) + centerX);
+			function dist2(x1, y1, x2, y2) { return (x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2) }
+			function distToSegmentSquared(xp, yp, x1, y1, x2, y2) {
+	  			var l2 = dist2(x1, y1, x2, y2);
+	  			if (l2 == 0) return dist2(xp, yp, x1, y1); // can be optimized
+	  			var t = ((xp - x1) * (x2 - x1) + (yp - y1) * (y2 - y1)) / l2;
+	  			if (t < 0) return dist2(x1, y1, xp, yp);
+	  			if (t > 1) return dist2(xp, yp, x2, y2);
+	  			return dist2(xp, yp, x1 + t * (x2 - x1), y1 + t * (y2 - y1));
 			}
+			function distToSegment(xp, yp, x1, y1, x2, y2) { return Math.sqrt(distToSegmentSquared(xp, yp, x1, y1, x2, y2)); }
 
-		, layer);
-		anim.start();
+		function F (frame) {
+			var amplitude = 150;
+			var period = 2000;
+			var centerX = stage.width ()/2;
+
+			ball.setX (amplitude * Math.sin (frame.time * 2 * Math.PI / period) + centerX);
+
+			for (i = 0; i < game.mirrors.length; i++) {
+				m = game.mirrors [i];
+				if (distToSegment (ball.getPosition().x, ball.getPosition().y, m.x1, m.y1, m.x2, m.y2) <= 7)
+					m.shape.stroke ('#'+Math.floor(Math.random()*16777215).toString(16));
+			}
+		}
+
+		function foo () {
+			var m = new Mirror(500,20,500,500);
+
+			// game.mirrors[0].shape.move ({x:-100, y:0});
+
+			var anim = new Kinetic.Animation (F, layer);
+			anim.start();
+		}
+
+
+
+
+		game = new Game ();
+		init ();
+		foo ();
+});
+
 
 	</script>
 </body>
