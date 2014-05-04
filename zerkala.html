@@ -1,164 +1,185 @@
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Zerkala Zerkaliki</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Zerkala Zerkaliki</title>
 </head>
 <body>
-	<div id="container" class="container"></div>
-	<p>Управляй фотоном, задавая с помощью мыши его движение.</p>
-	<p>Удваивай количество фотонов и побеждай своих друзей-задротов!</p>
+    <div id="container" class="container"></div>
+    <p>Управляй фотоном, задавая с помощью мыши его движение.</p>
+    <p>Удваивай количество фотонов и побеждай своих друзей-задротов!</p>
+
     <!--<script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v5.0.2.min.js"></script>-->
     <script src="http://www.html5canvastutorials.com/lib/KineticJS/kinetic-v5.0.1-beta.js"></script>
-	<script src="jquery-1.11.0.min.js"></script>
-	<script defer="defer">
+    <script src="jquery-1.11.0.min.js"></script>
+    <script defer="defer">
 
-$( document ).ready(function() {
-		// drawMirror(20,20,550,570);
-		// function drawMirror(x1_mirr, y1_mirr, x2_mirr, y2_mirr) {
-		// 	var mirr = new Kinetic.Line({
-		// 		points: [x1_mirr, y1_mirr, x2_mirr, y2_mirr],
-		// 		stroke: 'red',
-		// 		strokeWidth: 2,
-		// 		lineCap: 'round'
-		// 	})
-		// 	layer.add(mirr);
-		// }
+    $( document ).ready(function() {
+	// drawMirror(20,20,550,570);
+	// function drawMirror(x1_mirr, y1_mirr, x2_mirr, y2_mirr) {
+	// 	var mirr = new Kinetic.Line({
+	// 		points: [x1_mirr, y1_mirr, x2_mirr, y2_mirr],
+	// 		stroke: 'red',
+	// 		strokeWidth: 2,
+	// 		lineCap: 'round'
+	// 	})
+	// 	layer.add(mirr);
+	// }
 
-		// drawBonuses(20, 20)
-		// function drawBonuses(x_bon, y_bon) {
-		// 	var bonus = new Kinetic.Rect({
-		// 		x: x_bon,
-		// 		y: y_bon,
-		// 		width: 10,
-		// 		height: 10,
-		// 		fill: '#66EFFE',
-		// 		stroke: '#66EFFE',
-		// 		strokeWidth: 1
-		// 	})
-		// 	layer.add(bonus);
-		// }
-		// stage = 0;
-		// layer = 0;
-		// ball = 0;
+	// drawBonuses(20, 20)
+	// function drawBonuses(x_bon, y_bon) {
+	// 	var bonus = new Kinetic.Rect({
+	// 		x: x_bon,
+	// 		y: y_bon,
+	// 		width: 10,
+	// 		height: 10,
+	// 		fill: '#66EFFE',
+	// 		stroke: '#66EFFE',
+	// 		strokeWidth: 1
+	// 	})
+	// 	layer.add(bonus);
+	// }
+	// stage = 0;
+	// layer = 0;
+	// ball = 0;
 
-		function Game() {
-			this.mirrors = [];
-			this.balls = [];
-			// this.bonuses - do that later
-		}
+	function Game() {
+	    this.mirrors = [];
+	    this.balls = [];
+	    // this.bonuses - do that later
+	}
 
-		function Mirror(x1, y1, x2, y2) {
-			this.x1 = x1;
-			this.y1 = y1;
-			this.x2 = x2;
-			this.y2 = y2;
+	function Mirror(x1, y1, x2, y2) {
+	    this.x1 = x1;
+	    this.y1 = y1;
+	    this.x2 = x2;
+	    this.y2 = y2;
 
-			this.shape = new Kinetic.Line({
-				points: [x1, y1, x2, y2],
-				stroke: 'red',
-				strokeWidth: 2,
-				lineCap: 'round'
-			})
-			layer.add(this.shape);
+	    this.shape = new Kinetic.Line({
+		points: [x1, y1, x2, y2],
+		stroke: 'red',
+		strokeWidth: 2,
+		lineCap: 'round'
+	    })
+	    layer.add(this.shape);
 
-			game.mirrors.push (this);
-		}
+	    game.mirrors.push (this);
+	}
 
-		function init() {
-			stage = new Kinetic.Stage({
-				container: 'container',
-				width: 578,
-				height: 578
-			});
-			
-			layer = new Kinetic.Layer();
+	function init() {
+	    stage = new Kinetic.Stage({
+		container: 'container',
+		width: 578,
+		height: 578
+	    });
+	    
+	    layer = new Kinetic.Layer();
 
-			ball = new Kinetic.Circle({
-				x: stage.width()/2,
-				y: stage.height()/2,
-				radius: 7,
-				fill: 'black',
-				stroke: 'black',
-				stokeWidth:1
-			});
+	    ball = new Kinetic.Circle({
+		x: stage.width()/2,
+		y: stage.height()/2,
+		radius: 7,
+		fill: 'black',
+		stroke: 'black',
+		stokeWidth:1
+	    });
 
-			layer.add(ball);
-			stage.add(layer);
+	    layer.add(ball);
+	    stage.add(layer);
 
-			drawing = false;
-	
-		$('div.container').mousedown(function () {
-					drawing = true;
-					var mPos = stage.getPointerPosition();
-					m = new Mirror (mPos.x, mPos.y, mPos.x, mPos.y);
-			});
+	    drawing = false;
+    
 
-			$('div.container').mousemove(function (){
-				if (!drawing) return;
+	    function down (mPos) {
+		    drawing = true;
+		    m = new Mirror (mPos.x, mPos.y, mPos.x, mPos.y);
+	    }
+	    function move (mPos) {
+		if (!drawing) return;
 
-				var mPos = stage.getPointerPosition();
-				var m = game.mirrors [game.mirrors.length - 1];
-				pts = m.shape.points();
-				pts [2] = m.x2 = mPos.x;
-				pts [3] = m.y2 = mPos.y;
-				m.shape.points (pts);
-			});
+		var m = game.mirrors [game.mirrors.length - 1];
+		pts = m.shape.points();
+		pts [2] = m.x2 = mPos.x;
+		pts [3] = m.y2 = mPos.y;
+		m.shape.points (pts);
+	    }
+	    function up (mPos) {
+		drawing = false;
 
-			$('div.container').mouseup(function (){
-				drawing = false;
+		var m = game.mirrors [game.mirrors.length - 1];
+		pts = m.shape.points();
+		pts [2] = m.x2 = mPos.x;
+		pts [3] = m.y2 = mPos.y;
+		m.shape.points (pts);
+	    }
 
-				var mPos = stage.getPointerPosition();
-				var m = game.mirrors [game.mirrors.length - 1];
-				pts = m.shape.points();
-				pts [2] = m.x2 = mPos.x;
-				pts [3] = m.y2 = mPos.y;
-				m.shape.points (pts);
-			});
-		}
+	    function handler (e, f) {
+	        var touchobj = e.changedTouches[0];
+		mPos = new Object ();
+	        mPos.x = parseInt(touchobj.clientX); //touch.pageX;
+		mPos.y =  parseInt(touchobj.clientY); //touch.pageY;
+	        f (mPos);
+		e.preventDefault();
+	    }
+	    var container = document.getElementById('container')
+	    container.addEventListener('touchstart', function(e) {
+	        handler (e, down);
+	    }, false);
+	    container.addEventListener('touchmove', function(e) {
+	        handler (e, move);
+	    }, false);
+	    container.addEventListener('touchend', function(e) {
+	        handler (e, up);
+	    }, false);
 
-			function dist2(x1, y1, x2, y2) { return (x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2) }
-			function distToSegmentSquared(xp, yp, x1, y1, x2, y2) {
-	  			var l2 = dist2(x1, y1, x2, y2);
-	  			if (l2 == 0) return dist2(xp, yp, x1, y1); // can be optimized
-	  			var t = ((xp - x1) * (x2 - x1) + (yp - y1) * (y2 - y1)) / l2;
-	  			if (t < 0) return dist2(x1, y1, xp, yp);
-	  			if (t > 1) return dist2(xp, yp, x2, y2);
-	  			return dist2(xp, yp, x1 + t * (x2 - x1), y1 + t * (y2 - y1));
-			}
-			function distToSegment(xp, yp, x1, y1, x2, y2) { return Math.sqrt(distToSegmentSquared(xp, yp, x1, y1, x2, y2)); }
+	    $('div.container').mousedown(function () { down (stage.getPointerPosition()); });
+	    $('div.container').mousemove(function () { move (stage.getPointerPosition()); });
+	    $('div.container').mouseup(function () { up (stage.getPointerPosition()); });
+	}
 
-		function F (frame) {
-			var amplitude = 150;
-			var period = 2000;
-			var centerX = stage.width ()/2;
+	    function dist2(x1, y1, x2, y2) { return (x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2) }
+	    function distToSegmentSquared(xp, yp, x1, y1, x2, y2) {
+    	    var l2 = dist2(x1, y1, x2, y2);
+    	    if (l2 == 0) return dist2(xp, yp, x1, y1); // can be optimized
+    	    var t = ((xp - x1) * (x2 - x1) + (yp - y1) * (y2 - y1)) / l2;
+    	    if (t < 0) return dist2(x1, y1, xp, yp);
+    	    if (t > 1) return dist2(xp, yp, x2, y2);
+    	    return dist2(xp, yp, x1 + t * (x2 - x1), y1 + t * (y2 - y1));
+	    }
+	    function distToSegment(xp, yp, x1, y1, x2, y2) { return Math.sqrt(distToSegmentSquared(xp, yp, x1, y1, x2, y2)); }
 
-			ball.setX (amplitude * Math.sin (frame.time * 2 * Math.PI / period) + centerX);
+	function F (frame) {
+	    var amplitude = 150;
+	    var period = 2000;
+	    var centerX = stage.width ()/2;
 
-			for (i = 0; i < game.mirrors.length; i++) {
-				m = game.mirrors [i];
-				if (distToSegment (ball.getPosition().x, ball.getPosition().y, m.x1, m.y1, m.x2, m.y2) <= 7)
-					m.shape.stroke ('#'+Math.floor(Math.random()*16777215).toString(16));
-			}
-		}
+	    ball.setX (amplitude * Math.sin (frame.time * 2 * Math.PI / period) + centerX);
 
-		function foo () {
-			var m = new Mirror(500,20,500,500);
+	    for (i = 0; i < game.mirrors.length; i++) {
+		// shoud I change color only one time
+		m = game.mirrors [i];
+		if (distToSegment (ball.getPosition().x, ball.getPosition().y, m.x1, m.y1, m.x2, m.y2) <= 7)
+		    m.shape.stroke ('#'+Math.floor(Math.random()*16777215).toString(16));
+	    }
+	}
 
-			// game.mirrors[0].shape.move ({x:-100, y:0});
+	function foo () {
+	    var m = new Mirror(500,20,500,500);
 
-			var anim = new Kinetic.Animation (F, layer);
-			anim.start();
-		}
+	    // game.mirrors[0].shape.move ({x:-100, y:0});
+
+	    var anim = new Kinetic.Animation (F, layer);
+	    anim.start();
+	}
 
 
 
 
-		game = new Game ();
-		init ();
-		foo ();
+	game = new Game ();
+	init ();
+	foo ();
 });
 
 
-	</script>
+    </script>
 </body>
 </html>
