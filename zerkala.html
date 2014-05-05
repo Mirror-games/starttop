@@ -2,18 +2,15 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>Zerkala Zerkaliki</title>
-	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
-	<!-- <div class="disclaimer">
-		<p>Управляй фотоном, задавая с помощью мыши его движение.</p>
-		<p>Удваивай количество фотонов и побеждай своих друзей-задротов!</p>
-	</div> -->
+	
 	<div id="container" class="container"></div>
 
 	<!--<script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v5.0.2.min.js"></script>-->
 	<script src="http://www.html5canvastutorials.com/lib/KineticJS/kinetic-v5.0.1-beta.js"></script>
-	<script src="jquery-1.11.0.min.js"></script>
+	<script src="js/jquery.min.js"></script>
 	<script defer="defer">
 
 	$( document ).ready(function() {
@@ -73,7 +70,7 @@
 		/* click/touch hadlers */
 		function down (mPos) {
 			drawing = true;
-			m = new Mirror (mPos.x, mPos.y, mPos.x, mPos.y);
+			var m = new Mirror (mPos.x, mPos.y, mPos.x, mPos.y);
 		}
 		function move (mPos) {
 			if (!drawing) return;
